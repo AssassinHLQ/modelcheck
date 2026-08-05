@@ -1010,27 +1010,15 @@ body {
 
 .toast.out { opacity: 0; transition: opacity 0.3s; }
 
-#rotateOverlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  background: linear-gradient(160deg, #f3e8ff, #ffe4f0, #e0f2fe);
-}
-
-#rotateOverlay.show { display: flex; }
-
-.rotate-title {
-  font-size: 20px;
-  font-weight: 800;
-  color: var(--ink);
-}
-
-.rotate-sub {
-  font-size: 13px;
-  color: var(--ink-soft);
+@media (orientation: portrait) and (pointer: coarse) {
+  html, body { overflow: hidden; }
+  body {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vh;
+    height: 100vw;
+    transform: translateX(100vw) rotate(90deg);
+    transform-origin: top left;
+  }
 }
