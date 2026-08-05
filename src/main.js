@@ -1,4 +1,5 @@
 import { ModelViewer } from './viewer.js';
+import { createCrosshair } from './crosshair.js';
 import { initClickSpark } from './clickSpark.js';
 import { initElasticSlider } from './elasticSlider.js';
 import { setTessellationQuality } from './brepTessellate.js';
@@ -75,6 +76,7 @@ const els = {
 };
 
 const viewer = new ModelViewer(els.viewer);
+const crosshair = createCrosshair(els.viewer);
 const entries = new Map();
 let wireframeOn = false;
 let dragDepth = 0;
@@ -857,6 +859,7 @@ els.btnClear.addEventListener('click', () => {
 els.btnMeasure.addEventListener('click', () => {
   const on = !viewer.measureMode;
   viewer.setMeasureMode(on);
+  crosshair.setEnabled(on);
   els.btnMeasure.classList.toggle('active', on);
   els.btnMeasure.textContent = on ? '测量中…' : '测量长度';
   if (on) toast('点击模型上的两个点测量距离，右键/再次点击按钮退出', 'info');
