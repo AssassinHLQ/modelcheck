@@ -981,13 +981,22 @@ refreshSidebar();
 const rotateOverlay = document.getElementById('rotateOverlay');
 const rotateDismiss = document.getElementById('rotateDismiss');
 const isTouchDevice = () => 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+const mqPortrait = window.matchMedia('(orientation: portrait)');
+function isPortrait() {
+  return mqPortrait.matches || window.innerHeight > window.innerWidth + 1;
+}
 function updateRotateOverlay() {
-  const portrait = window.innerHeight > window.innerWidth + 1;
+  const portrait = isPortrait();
   let dismissed = false;
   try {
     dismissed = sessionStorage.getItem('rotateDismissed') === '1';
   } catch {}
   rotateOverlay.classList.toggle('show', isTouchDevice() && portrait && !dismissed);
+}
+function onOrientationChange() {
+  updateRotateOverlay();
+  setTimeout(updateRotateOverlay, 150);
+  setTimeout(updateRotateOverlay, 500);
 }
 if (rotateDismiss) rotateDismiss.addEventListener('click', () => {
   try {
@@ -995,8 +1004,9 @@ if (rotateDismiss) rotateDismiss.addEventListener('click', () => {
   } catch {}
   updateRotateOverlay();
 });
-window.addEventListener('resize', updateRotateOverlay);
-window.addEventListener('orientationchange', updateRotateOverlay);
+window.addEventListener('resize', onOrientationChange);
+window.addEventListener('orientationchange', onOrientationChange);
+if (mqPortrait.addEventListener) mqPortrait.addEventListener('change', onOrientationChange);
 updateRotateOverlay();
 
 initClickSpark({

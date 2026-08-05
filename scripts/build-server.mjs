@@ -12,5 +12,7 @@ const run = (cmd, args) => {
 
 run(process.execPath, [resolve(root, 'scripts', 'copy-rhino.mjs')]);
 run(process.execPath, [resolve(root, 'scripts', 'copy-occt.mjs')]);
+run(process.execPath, [resolve(root, 'scripts', 'copy-models.mjs')]);
+run(process.execPath, [resolve(root, 'scripts', 'copy-music.mjs')]);
 run(process.execPath, [resolve(root, 'node_modules', 'vite', 'bin', 'vite.js'), 'build']);
 console.log('服务器模式构建完成（index.html 不内嵌引擎）');

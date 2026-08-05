@@ -427,7 +427,7 @@ body {
   transition: scale 0.2s ease-out, opacity 0.2s ease-out;
 }
 
-.es-slider:hover {
+.es-slider:active {
   scale: 1.2;
   opacity: 1;
 }
