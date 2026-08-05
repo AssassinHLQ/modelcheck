@@ -466,7 +466,7 @@ body {
   will-change: transform;
 }
 
-.es-slider:hover .es-track { height: 12px; }
+.es-track-wrap:active .es-track { height: 12px; }
 
 .es-fill {
   height: 100%;
