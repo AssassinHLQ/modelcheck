@@ -926,6 +926,27 @@ window.addEventListener('drop', (e) => {
 
 refreshSidebar();
 
+const rotateOverlay = document.getElementById('rotateOverlay');
+const rotateDismiss = document.getElementById('rotateDismiss');
+const isTouchDevice = () => 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+function updateRotateOverlay() {
+  const portrait = window.innerHeight > window.innerWidth + 1;
+  let dismissed = false;
+  try {
+    dismissed = sessionStorage.getItem('rotateDismissed') === '1';
+  } catch {}
+  rotateOverlay.classList.toggle('show', isTouchDevice() && portrait && !dismissed);
+}
+if (rotateDismiss) rotateDismiss.addEventListener('click', () => {
+  try {
+    sessionStorage.setItem('rotateDismissed', '1');
+  } catch {}
+  updateRotateOverlay();
+});
+window.addEventListener('resize', updateRotateOverlay);
+window.addEventListener('orientationchange', updateRotateOverlay);
+updateRotateOverlay();
+
 initClickSpark({
   sparkColor: '#f9a8d4',
   sparkSize: 12,

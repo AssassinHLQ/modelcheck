@@ -33,6 +33,73 @@ export class ModelViewer {
     this.controls.dampingFactor = 0.08;
     this.controls.zoomToCursor = true;
 
+    this._lastTapT = 0;
+    this._lastTapX = 0;
+    this._lastTapY = 0;
+    this._panMode = false;
+    this._panArmed = false;
+    this._panMoved = false;
+    this._panStartX = 0;
+    this._panStartY = 0;
+    const el = this.renderer.domElement;
+    this._enterPanMode = (e) => {
+      this._panMode = true;
+      this._panMoved = false;
+      this._panStartX = e.clientX;
+      this._panStartY = e.clientY;
+      try {
+        this.controls.enabled = false;
+        this.controls._state = -1;
+        if (this.controls._pointers) this.controls._pointers.length = 0;
+        el.releasePointerCapture(e.pointerId);
+      } catch {}
+    };
+    this._touchDown = (e) => {
+      if (e.pointerType !== 'touch') return;
+      if (this.measureMode) {
+        this._lastTapT = 0;
+        return;
+      }
+      if (this._panArmed) {
+        this._panArmed = false;
+        this._enterPanMode(e);
+        return;
+      }
+      const now = performance.now();
+      const d = Math.hypot(e.clientX - this._lastTapX, e.clientY - this._lastTapY);
+      if (now - this._lastTapT < 350 && d < 40) {
+        this._enterPanMode(e);
+        return;
+      }
+      this._lastTapT = now;
+      this._lastTapX = e.clientX;
+      this._lastTapY = e.clientY;
+    };
+    this._touchMove = (e) => {
+      if (!this._panMode) return;
+      const dx = e.clientX - this._panStartX;
+      const dy = e.clientY - this._panStartY;
+      if (Math.abs(dx) + Math.abs(dy) > 1) this._panMoved = true;
+      this._panBy(dx, dy);
+      this._panStartX = e.clientX;
+      this._panStartY = e.clientY;
+    };
+    this._touchUp = () => {
+      if (!this._panMode) return;
+      this._panMode = false;
+      this.controls.enabled = true;
+      try {
+        this.controls._state = -1;
+      } catch {}
+      if (!this._panMoved) this._panArmed = true;
+      this._panMoved = false;
+      this._lastTapT = 0;
+    };
+    el.addEventListener('pointerdown', this._touchDown);
+    window.addEventListener('pointermove', this._touchMove);
+    window.addEventListener('pointerup', this._touchUp);
+    window.addEventListener('pointercancel', this._touchUp);
+
     this.keys = new Set();
     this._keydown = (e) => {
       if (['KeyW', 'KeyA', 'KeyS', 'KeyD', 'KeyQ', 'KeyE'].includes(e.code)) {
@@ -77,6 +144,24 @@ export class ModelViewer {
       this.controls.update();
       this.renderer.render(this.scene, this.camera);
     });
+  }
+
+  _panBy(dx, dy) {
+    const el = this.renderer.domElement;
+    let pxScale;
+    if (this.camera.isOrthographicCamera) {
+      pxScale = (2 * this.orthoHalfH) / el.clientHeight;
+    } else {
+      const d = this.camera.position.distanceTo(this.controls.target);
+      pxScale = (2 * d * Math.tan((this.camera.fov * Math.PI) / 360)) / el.clientHeight;
+    }
+    const off = new THREE.Vector3();
+    const right = new THREE.Vector3().setFromMatrixColumn(this.camera.matrixWorld, 0).normalize();
+    const up = new THREE.Vector3().setFromMatrixColumn(this.camera.matrixWorld, 1).normalize();
+    off.addScaledVector(right, -dx * pxScale);
+    off.addScaledVector(up, dy * pxScale);
+    this.camera.position.add(off);
+    this.controls.target.add(off);
   }
 
   _moveWithKeys() {
