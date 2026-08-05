@@ -17,10 +17,21 @@ export function createCrosshair(container) {
 
   const lerp = (a, b, n) => a + (b - a) * n;
 
+  const isRotated = () => window.matchMedia('(orientation: portrait) and (pointer: coarse)').matches;
+
   const onMove = (e) => {
     const rect = container.getBoundingClientRect();
-    mouse.x = e.clientX - rect.left;
-    mouse.y = e.clientY - rect.top;
+    let x;
+    let y;
+    if (isRotated()) {
+      x = e.clientY - rect.top;
+      y = rect.left + rect.width - e.clientX;
+    } else {
+      x = e.clientX - rect.left;
+      y = e.clientY - rect.top;
+    }
+    mouse.x = x;
+    mouse.y = y;
     const inBounds =
       e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom;
     if (inBounds !== inside) {

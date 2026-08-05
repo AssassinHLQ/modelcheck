@@ -194,7 +194,7 @@ function showFormatTip(anchor, ext) {
   if (!fmtTipEl) {
     fmtTipEl = document.createElement('div');
     fmtTipEl.className = 'fmt-tip';
-    document.body.appendChild(fmtTipEl);
+    document.documentElement.appendChild(fmtTipEl);
   }
   if (fmtTipVisible && fmtTipKey === key) {
     clearTimeout(fmtTipTimer);

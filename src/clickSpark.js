@@ -25,7 +25,7 @@ export function initClickSpark(opts = {}) {
 
   const canvas = document.createElement('canvas');
   canvas.className = 'spark-canvas';
-  document.body.appendChild(canvas);
+  document.documentElement.appendChild(canvas);
   const ctx = canvas.getContext('2d');
 
   const resize = () => {

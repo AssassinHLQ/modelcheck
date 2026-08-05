@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { OrbitControls } from './vendor/OrbitControls.js';
 
 export function formatMeasure(v) {
   if (!Number.isFinite(v)) return '—';
@@ -32,6 +32,17 @@ export class ModelViewer {
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.08;
     this.controls.zoomToCursor = true;
+    this._isRotated = () => window.matchMedia('(orientation: portrait) and (pointer: coarse)').matches;
+    this.controls.clientToLocal = (x, y) => {
+      if (!this._isRotated()) return { x, y };
+      const r = this.renderer.domElement.getBoundingClientRect();
+      return { x: y - r.top, y: r.left + r.width - x };
+    };
+    this.controls.getEventRect = () => {
+      if (!this._isRotated()) return this.renderer.domElement.getBoundingClientRect();
+      const r = this.renderer.domElement.getBoundingClientRect();
+      return { left: 0, top: 0, width: r.height, height: r.width, right: r.height, bottom: r.width };
+    };
 
     this._lastTapT = 0;
     this._lastTapX = 0;
@@ -77,8 +88,13 @@ export class ModelViewer {
     };
     this._touchMove = (e) => {
       if (!this._panMode) return;
-      const dx = e.clientX - this._panStartX;
-      const dy = e.clientY - this._panStartY;
+      let dx = e.clientX - this._panStartX;
+      let dy = e.clientY - this._panStartY;
+      if (this._isRotated()) {
+        const t = dx;
+        dx = dy;
+        dy = -t;
+      }
       if (Math.abs(dx) + Math.abs(dy) > 1) this._panMoved = true;
       this._panBy(dx, dy);
       this._panStartX = e.clientX;
@@ -358,12 +374,7 @@ export class ModelViewer {
 
   _handleHideClick(e) {
     if (!this.hideMode) return;
-    const rect = this.renderer.domElement.getBoundingClientRect();
-    const ndc = new THREE.Vector2(
-      ((e.clientX - rect.left) / rect.width) * 2 - 1,
-      -((e.clientY - rect.top) / rect.height) * 2 + 1
-    );
-    this.raycaster.setFromCamera(ndc, this.camera);
+    this.raycaster.setFromCamera(this._ndcFromClient(e.clientX, e.clientY), this.camera);
     const hits = this.raycaster.intersectObjects(this._measureTargets(), false);
     if (!hits.length) return;
     let obj = hits[0].object;
@@ -396,11 +407,19 @@ export class ModelViewer {
     return targets;
   }
 
+  _ndcFromClient(cx, cy) {
+    const r = this.renderer.domElement.getBoundingClientRect();
+    if (this._isRotated()) {
+      const lx = cy - r.top;
+      const ly = r.left + r.width - cx;
+      return new THREE.Vector2((lx / r.height) * 2 - 1, -(ly / r.width) * 2 + 1);
+    }
+    return new THREE.Vector2(((cx - r.left) / r.width) * 2 - 1, -((cy - r.top) / r.height) * 2 + 1);
+  }
+
   _handleMeasureClick(e) {
     if (!this.measureMode) return;
-    const rect = this.renderer.domElement.getBoundingClientRect();
-    const ndc = new THREE.Vector2(((e.clientX - rect.left) / rect.width) * 2 - 1, -((e.clientY - rect.top) / rect.height) * 2 + 1);
-    this.raycaster.setFromCamera(ndc, this.camera);
+    this.raycaster.setFromCamera(this._ndcFromClient(e.clientX, e.clientY), this.camera);
     const hits = this.raycaster.intersectObjects(this._measureTargets(), false);
     if (!hits.length) return;
     this._addMeasurePoint(hits[0].point.clone());

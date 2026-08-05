@@ -794,7 +794,8 @@ body {
 
 .empty-state .sub { font-size: 13px; }
 
-.empty-state.hidden-state { opacity: 0; }
+.empty-state.hidden-state { opacity: 0; pointer-events: none; }
+.empty-state.hidden-state button { pointer-events: none; }
 
 .empty-state button { pointer-events: auto; }
 
@@ -990,8 +991,8 @@ body {
   position: absolute;
   top: 0;
   left: 0;
-  background: #ec4899;
-  box-shadow: 0 0 4px rgba(236, 72, 153, 0.55);
+  background: #f9a8d4;
+  box-shadow: 0 0 4px rgba(249, 168, 212, 0.45);
   opacity: 0;
   transition: opacity 0.18s ease;
   will-change: transform;
