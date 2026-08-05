@@ -178,27 +178,49 @@ const FORMAT_DESC = {
 
 let fmtTipEl = null;
 let fmtTipTimer = null;
+let fmtTipKey = '';
+let fmtTipVisible = false;
 
 function showFormatTip(anchor, ext) {
   const desc = FORMAT_DESC[(ext || '').toLowerCase().replace(/^\./, '')];
   if (!desc) return;
+  const key = anchor.textContent.trim();
   if (!fmtTipEl) {
     fmtTipEl = document.createElement('div');
     fmtTipEl.className = 'fmt-tip';
     document.body.appendChild(fmtTipEl);
   }
+  if (fmtTipVisible && fmtTipKey === key) {
+    clearTimeout(fmtTipTimer);
+    fmtTipTimer = setTimeout(hideFormatTip, 3000);
+    return;
+  }
+  fmtTipKey = key;
   const rect = anchor.getBoundingClientRect();
   let left = rect.left + rect.width / 2;
   left = Math.max(100, Math.min(window.innerWidth - 100, left));
   fmtTipEl.style.left = left + 'px';
   fmtTipEl.style.top = rect.bottom + 10 + 'px';
   fmtTipEl.textContent = desc;
-  fmtTipEl.classList.remove('show');
+  fmtTipEl.classList.remove('hide');
   void fmtTipEl.offsetWidth;
   fmtTipEl.classList.add('show');
+  fmtTipVisible = true;
   clearTimeout(fmtTipTimer);
-  fmtTipTimer = setTimeout(() => fmtTipEl.classList.remove('show'), 3500);
+  fmtTipTimer = setTimeout(hideFormatTip, 3000);
 }
+
+function hideFormatTip() {
+  if (!fmtTipVisible) return;
+  fmtTipEl.classList.remove('show');
+  fmtTipEl.classList.add('hide');
+  fmtTipVisible = false;
+  fmtTipTimer = null;
+}
+
+document.addEventListener('click', (e) => {
+  if (fmtTipVisible && !e.target.closest('.brand .chip')) hideFormatTip();
+});
 
 document.querySelectorAll('.brand .chip').forEach((chip) => {
   chip.addEventListener('click', () => showFormatTip(chip, chip.textContent.trim()));
