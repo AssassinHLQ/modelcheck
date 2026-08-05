@@ -1,0 +1,30 @@
+{
+  "name": "3d-model-viewer",
+  "version": "1.0.0",
+  "description": "在线 3D 模型查看器：支持 Rhino (.3dm)、SketchUp (.skp)、FBX",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "predev": "node scripts/copy-rhino.mjs && node scripts/copy-occt.mjs && node scripts/copy-models.mjs && node scripts/copy-music.mjs",
+    "dev": "vite",
+    "prebuild": "node scripts/copy-rhino.mjs && node scripts/copy-occt.mjs && node scripts/copy-models.mjs && node scripts/copy-music.mjs",
+    "build": "vite build",
+    "build:server": "node scripts/build-server.mjs",
+    "build:local": "npm run build && node scripts/strip-external-wasm.mjs",
+    "assets": "node scripts/copy-rhino.mjs && node scripts/copy-occt.mjs && node scripts/copy-models.mjs && node scripts/copy-music.mjs && node scripts/sync-dist.mjs",
+    "compress-music": "node scripts/compress-music.mjs",
+    "preview": "vite preview"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "fflate": "^0.8.3",
+    "occt-import-js": "^0.0.23",
+    "openskp": "^0.3.1",
+    "rhino3dm": "^8.32.1",
+    "three": "^0.185.1"
+  },
+  "devDependencies": {
+    "vite": "^8.2.0",
+    "vite-plugin-singlefile": "^2.3.3"
+  }
+}

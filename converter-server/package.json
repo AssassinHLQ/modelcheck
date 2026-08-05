@@ -1,0 +1,11 @@
+{
+  "name": "converter-server",
+  "version": "1.0.0",
+  "description": "Rhino 批量转换服务：SolidWorks (.sldprt/.sldasm) 等格式自动转 STEP",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,11 @@
+node_modules
+dist
+public/rhino3dm
+public/occt
+public/models
+public/music
+music-original
+music.zip
+src/rhinoWasmB64.js
+src/occtWasmB64.js
+*.log
