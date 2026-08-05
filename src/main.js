@@ -80,6 +80,8 @@ const els = {
 const viewer = new ModelViewer(els.viewer);
 const crosshair = createCrosshair(els.viewer);
 const entries = new Map();
+const hiddenParts = new Map();
+let hideSeq = 0;
 let wireframeOn = false;
 let dragDepth = 0;
 
@@ -309,8 +311,19 @@ function addEntry(file, ext, result) {
   del.textContent = '✕';
   del.addEventListener('click', (e) => {
     e.stopPropagation();
+    const group = entries.get(id)?.group;
     viewer.removeModel(id);
     entries.delete(id);
+    if (group) {
+      for (const [hid, item] of [...hiddenParts]) {
+        let o = item.obj;
+        while (o.parent && o.parent !== viewer.scene) o = o.parent;
+        if (o === group) {
+          hiddenParts.delete(hid);
+          els.modelList.querySelector(`[data-hid="${hid}"]`)?.remove();
+        }
+      }
+    }
     li.remove();
     refreshSidebar();
   });
@@ -887,12 +900,56 @@ viewer._onHideModel = (obj) => {
     if (entry.group === entryObj) {
       obj.visible = false;
       refreshModelEyes();
-      const name = obj.name || entry.info.name;
-      toast(`已隐藏「${name}」（模型列表 👁 或「全部显示」可恢复）`, 'info');
+      hideSeq++;
+      const hid = 'h' + hideSeq;
+      const label = '隐藏' + String(hideSeq).padStart(3, '0');
+      const srcName = obj.name || entry.info.name;
+      hiddenParts.set(hid, { obj, label });
+      appendHiddenPart(hid, label, srcName);
+      toast(`已隐藏「${srcName}」→ ${label}（点列表中该行 👁 单独显示）`, 'info');
       return;
     }
   }
 };
+
+function appendHiddenPart(hid, label, srcName) {
+  const li = document.createElement('li');
+  li.className = 'model-item hidden-part';
+  li.dataset.hid = hid;
+  const chip = document.createElement('span');
+  chip.className = 'fmt chip-hidden';
+  chip.textContent = '隐藏';
+  const info = document.createElement('div');
+  info.className = 'name';
+  const nameDiv = document.createElement('div');
+  nameDiv.textContent = label;
+  const metaDiv = document.createElement('div');
+  metaDiv.className = 'meta';
+  metaDiv.textContent = srcName ? '原部件：' + srcName : '已隐藏';
+  info.appendChild(nameDiv);
+  info.appendChild(metaDiv);
+  const eye = document.createElement('button');
+  eye.className = 'icon-btn off';
+  eye.title = '显示此物体';
+  eye.textContent = '👁';
+  eye.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const item = hiddenParts.get(hid);
+    if (!item) return;
+    item.obj.visible = true;
+    hiddenParts.delete(hid);
+    li.remove();
+    toast(`已显示 ${label}`, 'info');
+  });
+  li.addEventListener('click', () => {
+    const item = hiddenParts.get(hid);
+    if (item) viewer.fitTo(item.obj);
+  });
+  li.appendChild(chip);
+  li.appendChild(info);
+  li.appendChild(eye);
+  els.modelList.appendChild(li);
+}
 
 els.btnHideMode.addEventListener('click', () => {
   const on = !viewer.hideMode;
@@ -910,8 +967,10 @@ els.btnHideMode.addEventListener('click', () => {
 
 els.btnShowAll.addEventListener('click', () => {
   const n = viewer.showAllModels();
+  hiddenParts.clear();
+  els.modelList.querySelectorAll('.hidden-part').forEach((li) => li.remove());
   refreshModelEyes();
-  toast(n ? `已显示全部 ${n} 个隐藏的模型` : '当前没有隐藏的模型', 'info');
+  toast(n ? `已显示全部 ${n} 个隐藏的物体` : '当前没有隐藏的物体', 'info');
 });
 
 els.btnClearMeasure.addEventListener('click', () => {

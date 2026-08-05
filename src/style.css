@@ -659,6 +659,12 @@ body {
 
 .model-item .icon-btn.off { color: var(--ink-soft); opacity: 0.45; }
 
+.chip-hidden { background: #e9e2ff; }
+
+.model-item.hidden-part { background: #faf8ff; }
+
+.model-item.hidden-part .name > div:first-child { color: #8b7bd8; font-weight: 700; }
+
 .model-item .icon-btn.del:hover { color: #f472b6; background: #ffe4ef; }
 
 .sidebar-hint {
@@ -928,9 +934,9 @@ body {
 .toast.error { border-color: #f9a8d4; color: #ec4899; background: #fff5fa; }
 .toast.ok { border-color: #86dfc4; color: #2da77f; background: #f2fdf9; }
 .toast.fmt {
-  border-color: #c4b5fd;
-  color: #7c3aed;
-  background: linear-gradient(135deg, #faf7ff, #f5f0ff);
+  border-color: #ddd6fe;
+  color: #a78bfa;
+  background: linear-gradient(135deg, #f7f5ff, #f1ecff);
   animation: fmt-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -948,9 +954,9 @@ body {
   font-weight: 600;
   padding: 7px 14px;
   border-radius: 999px;
-  background: linear-gradient(135deg, #faf7ff, #f5f0ff);
-  border: 2px solid #c4b5fd;
-  color: #7c3aed;
+  background: linear-gradient(135deg, #f7f5ff, #f1ecff);
+  border: 2px solid #ddd6fe;
+  color: #a78bfa;
   box-shadow: var(--shadow);
   pointer-events: none;
   white-space: nowrap;
