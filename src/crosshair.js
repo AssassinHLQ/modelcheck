@@ -30,8 +30,8 @@ export function createCrosshair(container) {
   };
 
   const tick = () => {
-    smooth.x = lerp(smooth.x, mouse.x, 0.15);
-    smooth.y = lerp(smooth.y, mouse.y, 0.15);
+    smooth.x = lerp(smooth.x, mouse.x, 0.05);
+    smooth.y = lerp(smooth.y, mouse.y, 0.05);
     vLine.style.transform = `translateX(${smooth.x - 0.5}px)`;
     hLine.style.transform = `translateY(${smooth.y - 0.5}px)`;
     if (enabled) rafId = requestAnimationFrame(tick);
