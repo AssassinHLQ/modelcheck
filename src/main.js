@@ -176,13 +176,32 @@ const FORMAT_DESC = {
   '3mf': '3D 打印标准：支持彩色与材质',
 };
 
-function showFormatTip(ext) {
+let fmtTipEl = null;
+let fmtTipTimer = null;
+
+function showFormatTip(anchor, ext) {
   const desc = FORMAT_DESC[(ext || '').toLowerCase().replace(/^\./, '')];
-  if (desc) toast(desc, 'fmt');
+  if (!desc) return;
+  if (!fmtTipEl) {
+    fmtTipEl = document.createElement('div');
+    fmtTipEl.className = 'fmt-tip';
+    document.body.appendChild(fmtTipEl);
+  }
+  const rect = anchor.getBoundingClientRect();
+  let left = rect.left + rect.width / 2;
+  left = Math.max(100, Math.min(window.innerWidth - 100, left));
+  fmtTipEl.style.left = left + 'px';
+  fmtTipEl.style.top = rect.bottom + 10 + 'px';
+  fmtTipEl.textContent = desc;
+  fmtTipEl.classList.remove('show');
+  void fmtTipEl.offsetWidth;
+  fmtTipEl.classList.add('show');
+  clearTimeout(fmtTipTimer);
+  fmtTipTimer = setTimeout(() => fmtTipEl.classList.remove('show'), 3500);
 }
 
 document.querySelectorAll('.brand .chip').forEach((chip) => {
-  chip.addEventListener('click', () => showFormatTip(chip.textContent.trim()));
+  chip.addEventListener('click', () => showFormatTip(chip, chip.textContent.trim()));
 });
 
 function refreshSidebar() {
