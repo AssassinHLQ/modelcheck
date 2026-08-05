@@ -1300,14 +1300,17 @@ class OrbitControls extends Controls {
 
 		if ( this._pointers.length === 1 ) {
 
-			this._rotateStart.set( event.pageX, event.pageY );
+			const p = this.clientToLocal ? this.clientToLocal( event.pageX, event.pageY ) : { x: event.pageX, y: event.pageY };
+			this._rotateStart.set( p.x, p.y );
 
 		} else {
 
 			const position = this._getSecondPointerPosition( event );
 
-			const x = 0.5 * ( event.pageX + position.x );
-			const y = 0.5 * ( event.pageY + position.y );
+			let x = 0.5 * ( event.pageX + position.x );
+			let y = 0.5 * ( event.pageY + position.y );
+
+			if ( this.clientToLocal ) { const p = this.clientToLocal( x, y ); x = p.x; y = p.y; }
 
 			this._rotateStart.set( x, y );
 
@@ -1319,14 +1322,17 @@ class OrbitControls extends Controls {
 
 		if ( this._pointers.length === 1 ) {
 
-			this._panStart.set( event.pageX, event.pageY );
+			const p = this.clientToLocal ? this.clientToLocal( event.pageX, event.pageY ) : { x: event.pageX, y: event.pageY };
+			this._panStart.set( p.x, p.y );
 
 		} else {
 
 			const position = this._getSecondPointerPosition( event );
 
-			const x = 0.5 * ( event.pageX + position.x );
-			const y = 0.5 * ( event.pageY + position.y );
+			let x = 0.5 * ( event.pageX + position.x );
+			let y = 0.5 * ( event.pageY + position.y );
+
+			if ( this.clientToLocal ) { const p = this.clientToLocal( x, y ); x = p.x; y = p.y; }
 
 			this._panStart.set( x, y );
 
@@ -1367,14 +1373,17 @@ class OrbitControls extends Controls {
 
 		if ( this._pointers.length == 1 ) {
 
-			this._rotateEnd.set( event.pageX, event.pageY );
+			const p = this.clientToLocal ? this.clientToLocal( event.pageX, event.pageY ) : { x: event.pageX, y: event.pageY };
+			this._rotateEnd.set( p.x, p.y );
 
 		} else {
 
 			const position = this._getSecondPointerPosition( event );
 
-			const x = 0.5 * ( event.pageX + position.x );
-			const y = 0.5 * ( event.pageY + position.y );
+			let x = 0.5 * ( event.pageX + position.x );
+			let y = 0.5 * ( event.pageY + position.y );
+
+			if ( this.clientToLocal ) { const p = this.clientToLocal( x, y ); x = p.x; y = p.y; }
 
 			this._rotateEnd.set( x, y );
 
@@ -1396,14 +1405,17 @@ class OrbitControls extends Controls {
 
 		if ( this._pointers.length === 1 ) {
 
-			this._panEnd.set( event.pageX, event.pageY );
+			const p = this.clientToLocal ? this.clientToLocal( event.pageX, event.pageY ) : { x: event.pageX, y: event.pageY };
+			this._panEnd.set( p.x, p.y );
 
 		} else {
 
 			const position = this._getSecondPointerPosition( event );
 
-			const x = 0.5 * ( event.pageX + position.x );
-			const y = 0.5 * ( event.pageY + position.y );
+			let x = 0.5 * ( event.pageX + position.x );
+			let y = 0.5 * ( event.pageY + position.y );
+
+			if ( this.clientToLocal ) { const p = this.clientToLocal( x, y ); x = p.x; y = p.y; }
 
 			this._panEnd.set( x, y );
 
