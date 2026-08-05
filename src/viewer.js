@@ -134,8 +134,11 @@ export class ModelViewer {
     this.scene.add(this.measureGroup);
     this.measureMode = false;
     this.measurePoints = [];
+    this.hideMode = false;
     this.raycaster = new THREE.Raycaster();
     this._measureClick = (e) => this._handleMeasureClick(e);
+    this._hideClick = (e) => this._handleHideClick(e);
+    this._onHideModel = null;
 
     this._ro = new ResizeObserver(() => this._onResize());
     this._ro.observe(container);
@@ -333,6 +336,39 @@ export class ModelViewer {
     if (on) this.renderer.domElement.addEventListener('click', this._measureClick);
     else this.renderer.domElement.removeEventListener('click', this._measureClick);
     if (!on) this.measurePoints = [];
+  }
+
+  setHideMode(on) {
+    this.hideMode = on;
+    this.renderer.domElement.style.cursor = on ? 'pointer' : '';
+    if (on) this.renderer.domElement.addEventListener('click', this._hideClick);
+    else this.renderer.domElement.removeEventListener('click', this._hideClick);
+  }
+
+  showAllModels() {
+    let count = 0;
+    for (const { group } of this.models.values()) {
+      if (!group.visible) {
+        group.visible = true;
+        count++;
+      }
+    }
+    return count;
+  }
+
+  _handleHideClick(e) {
+    if (!this.hideMode) return;
+    const rect = this.renderer.domElement.getBoundingClientRect();
+    const ndc = new THREE.Vector2(
+      ((e.clientX - rect.left) / rect.width) * 2 - 1,
+      -((e.clientY - rect.top) / rect.height) * 2 + 1
+    );
+    this.raycaster.setFromCamera(ndc, this.camera);
+    const hits = this.raycaster.intersectObjects(this._measureTargets(), false);
+    if (!hits.length) return;
+    let obj = hits[0].object;
+    while (obj.parent && obj.parent !== this.scene) obj = obj.parent;
+    if (this._onHideModel) this._onHideModel(obj);
   }
 
   clearMeasurements() {

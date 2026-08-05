@@ -62,6 +62,8 @@ const els = {
   btnClear: document.getElementById('btnClear'),
   btnMeasure: document.getElementById('btnMeasure'),
   btnClearMeasure: document.getElementById('btnClearMeasure'),
+  btnHideMode: document.getElementById('btnHideMode'),
+  btnShowAll: document.getElementById('btnShowAll'),
   modelList: document.getElementById('modelList'),
   sidebarHint: document.getElementById('sidebarHint'),
   modelCount: document.getElementById('modelCount'),
@@ -858,11 +860,55 @@ els.btnClear.addEventListener('click', () => {
 
 els.btnMeasure.addEventListener('click', () => {
   const on = !viewer.measureMode;
+  if (on && viewer.hideMode) {
+    viewer.setHideMode(false);
+    els.btnHideMode.classList.remove('active');
+    els.btnHideMode.textContent = '隐藏物体';
+  }
   viewer.setMeasureMode(on);
   crosshair.setEnabled(on);
   els.btnMeasure.classList.toggle('active', on);
   els.btnMeasure.textContent = on ? '测量中…' : '测量长度';
   if (on) toast('点击模型上的两个点测量距离，右键/再次点击按钮退出', 'info');
+});
+
+function refreshModelEyes() {
+  els.modelList.querySelectorAll('.model-item').forEach((li) => {
+    const entry = entries.get(li.dataset.id);
+    const eye = li.querySelector('.icon-btn');
+    if (entry && eye) eye.classList.toggle('off', entry.group.visible === false);
+  });
+}
+
+viewer._onHideModel = (group) => {
+  for (const [id, entry] of entries) {
+    if (entry.group === group) {
+      viewer.setVisible(id, false);
+      refreshModelEyes();
+      toast(`已隐藏 ${entry.info.name}（模型列表 👁 或「全部显示」可恢复）`, 'info');
+      return;
+    }
+  }
+};
+
+els.btnHideMode.addEventListener('click', () => {
+  const on = !viewer.hideMode;
+  if (on && viewer.measureMode) {
+    viewer.setMeasureMode(false);
+    crosshair.setEnabled(false);
+    els.btnMeasure.classList.remove('active');
+    els.btnMeasure.textContent = '测量长度';
+  }
+  viewer.setHideMode(on);
+  els.btnHideMode.classList.toggle('active', on);
+  els.btnHideMode.textContent = on ? '隐藏中…' : '隐藏物体';
+  if (on) toast('点击模型即可隐藏；恢复：模型列表点 👁 或「全部显示」', 'info');
+});
+
+els.btnShowAll.addEventListener('click', () => {
+  const n = viewer.showAllModels();
+  refreshModelEyes();
+  toast(n ? `已显示全部 ${n} 个隐藏的模型` : '当前没有隐藏的模型', 'info');
 });
 
 els.btnClearMeasure.addEventListener('click', () => {
