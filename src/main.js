@@ -906,7 +906,6 @@ viewer._onHideModel = (obj) => {
       const srcName = obj.name || entry.info.name;
       hiddenParts.set(hid, { obj, label });
       appendHiddenPart(hid, label, srcName);
-      toast(`已隐藏「${srcName}」→ ${label}（点列表中该行 👁 单独显示）`, 'info');
       return;
     }
   }
@@ -939,7 +938,6 @@ function appendHiddenPart(hid, label, srcName) {
     item.obj.visible = true;
     hiddenParts.delete(hid);
     li.remove();
-    toast(`已显示 ${label}`, 'info');
   });
   li.addEventListener('click', () => {
     const item = hiddenParts.get(hid);
@@ -970,7 +968,6 @@ els.btnShowAll.addEventListener('click', () => {
   hiddenParts.clear();
   els.modelList.querySelectorAll('.hidden-part').forEach((li) => li.remove());
   refreshModelEyes();
-  toast(n ? `已显示全部 ${n} 个隐藏的物体` : '当前没有隐藏的物体', 'info');
 });
 
 els.btnClearMeasure.addEventListener('click', () => {
