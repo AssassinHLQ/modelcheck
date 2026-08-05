@@ -927,6 +927,18 @@ body {
 
 .toast.error { border-color: #f9a8d4; color: #ec4899; background: #fff5fa; }
 .toast.ok { border-color: #86dfc4; color: #2da77f; background: #f2fdf9; }
+.toast.fmt {
+  border-color: #c4b5fd;
+  color: #7c3aed;
+  background: linear-gradient(135deg, #faf7ff, #f5f0ff);
+  animation: fmt-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes fmt-in {
+  from { opacity: 0; transform: translateY(-8px) scale(0.6); }
+  60% { transform: translateY(1px) scale(1.06); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
 
 @keyframes toast-in {
   from { opacity: 0; transform: translateY(-8px); }

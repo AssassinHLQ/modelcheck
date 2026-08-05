@@ -158,6 +158,29 @@ function fmtChip(ext) {
   return `<span class="fmt ${cls}">.${ext}</span>`;
 }
 
+const FORMAT_DESC = {
+  '3dm': 'Rhino 原生格式：曲面、实体与网格',
+  'skp': 'SketchUp 模型：组件与材质完整显示',
+  'fbx': '通用 3D 交换格式：支持贴图与动画',
+  'glb': '现代标准格式：材质贴图效果最佳',
+  'gltf': '现代标准格式：材质贴图效果最佳',
+  'obj': '经典通用格式：配合 mtl 文件显示贴图',
+  'stp': '工业 CAD 格式：实体零件精细显示',
+  'step': '工业 CAD 格式：实体零件精细显示',
+  'iges': 'CAD 曲面格式：曲线曲面精细显示',
+  'igs': 'CAD 曲面格式：曲线曲面精细显示',
+  'brep': 'Rhino 实体数据：实时网格化显示',
+  'stl': '3D 打印格式：仅表面网格无颜色',
+  'dxf': 'CAD 二维线框：线条分层显示',
+  'ply': '通用格式：支持网格与彩色点云',
+  '3mf': '3D 打印标准：支持彩色与材质',
+};
+
+function showFormatTip(ext) {
+  const desc = FORMAT_DESC[(ext || '').toLowerCase().replace(/^\./, '')];
+  if (desc) toast(desc, 'fmt');
+}
+
 function refreshSidebar() {
   els.modelCount.textContent = entries.size;
   els.sidebarHint.style.display = entries.size ? 'none' : '';
@@ -739,7 +762,10 @@ function renderBuiltinList() {
     sizeSpan.textContent = fmtSize(f.size);
     li.appendChild(nameSpan);
     li.appendChild(sizeSpan);
-    li.addEventListener('click', () => loadBuiltin(f));
+    li.addEventListener('click', () => {
+      showFormatTip(extOf(f.name));
+      loadBuiltin(f);
+    });
     els.builtinList.appendChild(li);
   }
 }
