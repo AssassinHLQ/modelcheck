@@ -181,6 +181,37 @@ function showFormatTip(ext) {
   if (desc) toast(desc, 'fmt');
 }
 
+const TOOL_DESC = {
+  upload: '上传模型文件：支持 14 种格式，可多选或拖拽',
+  builtin: '打开内置模型列表，点击即加载',
+  music: '打开背景音乐列表，选择播放',
+  views: '切换视角：顶/底/左/右/前/后/默认',
+  grid: '显示或隐藏参考网格',
+  axes: '显示或隐藏三轴坐标指示',
+  wire: '切换线框模式显示',
+  reset: '视角回到初始位置',
+  clear: '移除全部已加载的模型',
+};
+
+function tipOnClick(el, key) {
+  if (!el) return;
+  el.addEventListener('click', () => {
+    const desc = TOOL_DESC[key];
+    if (desc) toast(desc, 'fmt');
+  });
+}
+
+tipOnClick(els.btnUpload, 'upload');
+tipOnClick(els.btnPick, 'upload');
+tipOnClick(els.btnGrid, 'grid');
+tipOnClick(els.btnAxes, 'axes');
+tipOnClick(els.btnWire, 'wire');
+tipOnClick(els.btnViews, 'views');
+tipOnClick(els.btnReset, 'reset');
+tipOnClick(els.btnBuiltin, 'builtin');
+tipOnClick(els.btnMusic, 'music');
+tipOnClick(els.btnClear, 'clear');
+
 function refreshSidebar() {
   els.modelCount.textContent = entries.size;
   els.sidebarHint.style.display = entries.size ? 'none' : '';
