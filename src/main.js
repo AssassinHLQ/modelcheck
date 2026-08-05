@@ -296,12 +296,13 @@ function addEntry(file, ext, result) {
   const eye = document.createElement('button');
   eye.className = 'icon-btn';
   eye.title = '显示/隐藏';
-  eye.textContent = '👁';
+  eye.textContent = '◇';
   eye.addEventListener('click', (e) => {
     e.stopPropagation();
     const entry = entries.get(id);
     const next = entry.group.visible === false;
     viewer.setVisible(id, next);
+    eye.textContent = next ? '◆' : '◇';
     eye.classList.toggle('off', !next);
   });
 
@@ -889,7 +890,11 @@ function refreshModelEyes() {
   els.modelList.querySelectorAll('.model-item').forEach((li) => {
     const entry = entries.get(li.dataset.id);
     const eye = li.querySelector('.icon-btn');
-    if (entry && eye) eye.classList.toggle('off', entry.group.visible === false);
+    if (entry && eye) {
+      const hidden = entry.group.visible === false;
+      eye.textContent = hidden ? '◆' : '◇';
+      eye.classList.toggle('off', hidden);
+    }
   });
 }
 
@@ -930,7 +935,7 @@ function appendHiddenPart(hid, label, srcName) {
   const eye = document.createElement('button');
   eye.className = 'icon-btn off';
   eye.title = '显示此物体';
-  eye.textContent = '👁';
+  eye.textContent = '◆';
   eye.addEventListener('click', (e) => {
     e.stopPropagation();
     const item = hiddenParts.get(hid);
@@ -960,7 +965,7 @@ els.btnHideMode.addEventListener('click', () => {
   viewer.setHideMode(on);
   els.btnHideMode.classList.toggle('active', on);
   els.btnHideMode.textContent = on ? '隐藏中…' : '隐藏物体';
-  if (on) toast('点击模型即可隐藏；恢复：模型列表点 👁 或「全部显示」', 'info');
+  if (on) toast('点击模型即可隐藏；恢复：模型列表点 ◇/◆ 或「全部显示」', 'info');
 });
 
 els.btnShowAll.addEventListener('click', () => {
