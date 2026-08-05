@@ -880,12 +880,15 @@ function refreshModelEyes() {
   });
 }
 
-viewer._onHideModel = (group) => {
+viewer._onHideModel = (obj) => {
+  let entryObj = obj;
+  while (entryObj.parent && entryObj.parent !== viewer.scene) entryObj = entryObj.parent;
   for (const [id, entry] of entries) {
-    if (entry.group === group) {
-      viewer.setVisible(id, false);
+    if (entry.group === entryObj) {
+      obj.visible = false;
       refreshModelEyes();
-      toast(`已隐藏 ${entry.info.name}（模型列表 👁 或「全部显示」可恢复）`, 'info');
+      const name = obj.name || entry.info.name;
+      toast(`已隐藏「${name}」（模型列表 👁 或「全部显示」可恢复）`, 'info');
       return;
     }
   }

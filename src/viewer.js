@@ -348,10 +348,10 @@ export class ModelViewer {
   showAllModels() {
     let count = 0;
     for (const { group } of this.models.values()) {
-      if (!group.visible) {
-        group.visible = true;
-        count++;
-      }
+      group.traverse((o) => {
+        if (!o.visible) count++;
+        o.visible = true;
+      });
     }
     return count;
   }
@@ -367,7 +367,10 @@ export class ModelViewer {
     const hits = this.raycaster.intersectObjects(this._measureTargets(), false);
     if (!hits.length) return;
     let obj = hits[0].object;
-    while (obj.parent && obj.parent !== this.scene) obj = obj.parent;
+    while (obj.parent && obj.parent !== this.scene) {
+      if (obj.parent.parent === this.scene) break;
+      obj = obj.parent;
+    }
     if (this._onHideModel) this._onHideModel(obj);
   }
 
