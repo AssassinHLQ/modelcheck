@@ -163,12 +163,7 @@ body {
 
 .builtin-list {
   list-style: none;
-  max-height: 320px;
-  overflow-y: auto;
 }
-
-.builtin-list::-webkit-scrollbar { width: 8px; }
-.builtin-list::-webkit-scrollbar-thumb { background: var(--blue-gray); border-radius: 4px; }
 
 .builtin-list li {
   display: flex;
@@ -1047,7 +1042,6 @@ body {
   .quality-label { font-size: 11px; }
   .builtin-panel { width: 250px; }
   #musicPanel { width: 300px; }
-  .builtin-list { max-height: 260px; }
   .glass-grid { grid-template-columns: repeat(4, 44px); }
   .toast { font-size: 12px; padding: 8px 14px; }
   .fmt-tip { font-size: 11px; }
