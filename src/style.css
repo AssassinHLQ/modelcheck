@@ -1022,3 +1022,34 @@ body {
     transform-origin: top left;
   }
 }
+
+@media (max-width: 960px) {
+  .topbar { height: 46px; padding: 0 8px; gap: 8px; }
+  .brand { gap: 6px; }
+  .brand svg { display: none; }
+  .brand-title { font-size: 13px; }
+  .brand .chip { display: none; }
+  .tools { gap: 4px; }
+  .tools .btn { padding: 3px 7px; font-size: 11px; }
+  .tools .btn.primary { padding: 3px 10px; }
+  .divider { display: none; }
+  .layout { height: calc(100% - 46px); }
+  .sidebar { width: 200px; }
+  .sidebar-head { padding: 10px 12px 8px; }
+  .sidebar-head h3 { font-size: 12px; }
+  .model-item { padding: 7px 8px; gap: 6px; }
+  .model-item .name { font-size: 12px; }
+  .model-item .meta { font-size: 10px; }
+  .sidebar-hint { padding: 10px 12px; font-size: 11px; }
+  .measure-bar { padding: 6px 10px; gap: 6px; }
+  .measure-btn, .quality-btn { font-size: 11px; padding: 4px 6px; }
+  .quality-label { font-size: 11px; }
+  .builtin-panel { width: 250px; }
+  #musicPanel { width: 300px; }
+  .builtin-list { max-height: 260px; }
+  .glass-grid { grid-template-columns: repeat(4, 44px); }
+  .toast { font-size: 12px; padding: 8px 14px; }
+  .fmt-tip { font-size: 11px; }
+  .loading-box { width: 280px; }
+  .stats { font-size: 12px; }
+}
