@@ -206,10 +206,7 @@ tipOnClick(els.btnPick, 'upload');
 tipOnClick(els.btnGrid, 'grid');
 tipOnClick(els.btnAxes, 'axes');
 tipOnClick(els.btnWire, 'wire');
-tipOnClick(els.btnViews, 'views');
 tipOnClick(els.btnReset, 'reset');
-tipOnClick(els.btnBuiltin, 'builtin');
-tipOnClick(els.btnMusic, 'music');
 tipOnClick(els.btnClear, 'clear');
 
 function refreshSidebar() {
